@@ -38,9 +38,10 @@
         getVehiclesOnTrack();
     });
 
-    function getVehiclesOnTrack() {
+    function getVehiclesOnTrack() {        
         $.get("GetVehiclesOnTracksAsync", function (data) {
             $('#Vehicles').dataTable({
+                destroy: true,
                 data: data,
                 columns: [
                     { 'data': "type" },
@@ -48,6 +49,8 @@
                 ]
             });
         });
+
+        setTimeout(getVehiclesOnTrack, 5000);
     }
 
 

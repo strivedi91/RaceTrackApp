@@ -62,6 +62,7 @@ namespace RaceTrack.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }
