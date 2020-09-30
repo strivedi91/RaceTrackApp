@@ -1,0 +1,104 @@
+﻿@model RaceTrack.Web.CQRS.Commands.AddVehicleOnTrackCommand
+
+@{
+    ViewData["Title"] = "AddVehicleOnTrack";
+    List<SelectListItem> vehicleTypes = new List<SelectListItem>();
+    vehicleTypes.Add(new SelectListItem
+    {
+        Text = "Truck",
+        Value = "Truck"
+    });
+    vehicleTypes.Add(new SelectListItem
+    {
+        Text = "Car",
+        Value = "Car",
+    });
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6"><h2>Add Vehicle On Track</h2></div>
+        <div class="col-md-6"><a asp-action="Index">Back to List</a></div>
+    </div>
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <form id="addNewVehicleForm" asp-action="AddVehicleOnTrack">
+                @if(ViewBag.ErrorMessage != null)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-danger" role="alert">
+                               @ViewBag.ErrorMessage
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="form-group">
+                    <label asp-for="Type"></label>
+                    @Html.DropDownListFor(model => model.Type, vehicleTypes, "-- Select Type --", new { @class = "form-control" })
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Identification"></label>
+                    <input asp-for="Identification" class="form-control" />
+                    <span asp-validation-for="Identification" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="AreThereTwoStrapsOnVehicle" /> @Html.DisplayNameFor(model => model.AreThereTwoStrapsOnVehicle)
+                    </label>
+                </div>
+                <div class="form-group form-check" style="display:none;" id="chkIsNotLiftedMoreThan5Inches">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsNotLiftedMoreThan5Inches" /> @Html.DisplayNameFor(model => model.IsNotLiftedMoreThan5Inches)
+                    </label>
+                </div>
+                <div class="form-group form-check" style="display:none;" id="chkHaveLessThan85PerTireWear">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="HaveLessThan85PerTireWear" /> @Html.DisplayNameFor(model => model.HaveLessThan85PerTireWear)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    //$('#addNewVehicleForm').submit(function () {
+    //    if ("input[type=checkbox]:not(:checked)") {
+    //        return false;
+    //    } else {
+    //        alert('hi');
+    //        return true;
+    //    }
+    //});
+
+    $(document).ready(function () {
+        showHideCheckboxesBasedOnType('@Model?.Type');
+    });
+
+    $('#Type').change(function () {
+        showHideCheckboxesBasedOnType($(this).val());
+    })
+    function showHideCheckboxesBasedOnType(selectedType) {
+        if (selectedType === "Car") {
+            $("#chkIsNotLiftedMoreThan5Inches").hide()
+            $("#chkHaveLessThan85PerTireWear").show();
+        } else if (selectedType === "Truck") {
+            $("#chkHaveLessThan85PerTireWear").hide();
+            $("#chkIsNotLiftedMoreThan5Inches").show();
+        }
+    }
+
+
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

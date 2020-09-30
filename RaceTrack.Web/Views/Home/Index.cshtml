@@ -1,0 +1,54 @@
+﻿@model IEnumerable<RaceTrack.Web.CQRS.VehiclesOnTrack>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6"><h2>Vehicles on Track</h2></div>
+        <div class="col-md-6">
+            <a class="btn btn-success text-white float-right" asp-action="AddVehicleOnTrack">Add New Vehicle</a>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-md-12">
+            <table id="Vehicles" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Identification</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>        
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {        
+        getVehiclesOnTrack();
+    });
+
+    function getVehiclesOnTrack() {
+        $.get("GetVehiclesOnTracksAsync", function (data) {
+            $('#Vehicles').dataTable({
+                data: data,
+                columns: [
+                    { 'data': "type" },
+                    { 'data': "identification" }
+                ]
+            });
+        });
+    }
+
+
+</script>
