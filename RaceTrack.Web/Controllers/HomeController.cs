@@ -32,8 +32,17 @@ namespace RaceTrack.Web.Controllers
         [HttpGet]
         public async Task<ActionResult> GetVehiclesOnTracksAsync()
         {
-            var data = await _mediator.Send(new GetAllVehiclesOnTrack());
-            return Json(data);
+            try
+            {
+                var data = await _mediator.Send(new GetAllVehiclesOnTrack());
+                return Json(data);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                // ToDo : Can handle the exception gracefully and show proper message on front end.  
+                throw ex;
+            }
         }
 
         public async Task<IActionResult> AddVehicleOnTrack()
@@ -44,17 +53,25 @@ namespace RaceTrack.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddVehicleOnTrack(AddVehicleOnTrackCommand request)
         {
-            var result = await _mediator.Send(request);
-            if (string.IsNullOrEmpty(result.Error))
+            try
             {
-                return RedirectToAction("index");
+                var result = await _mediator.Send(request);
+                if (string.IsNullOrEmpty(result.Error))
+                {
+                    return RedirectToAction("index");
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = result.Error;
+                    return View(result.Data);
+                }
             }
-            else
+            catch (System.Exception ex)
             {
-                ViewBag.ErrorMessage = result.Error;
-                return View(result.Data);
+                _logger.LogError(ex.Message);
+                // ToDo : Can handle the exception gracefully and show proper message on front end. 
+                throw;
             }
-
         }
 
         public IActionResult Privacy()
